@@ -5,10 +5,11 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONPATH=/app
 
 # 비root 사용자 생성
-RUN groupadd -r django && useradd -r -g django django
+RUN groupadd -r django && useradd -r -g django -m django
 
 # 작업 디렉토리 설정
 WORKDIR /app
@@ -43,9 +44,9 @@ USER django
 # 포트 노출
 EXPOSE 8000
 
-# 헬스체크 추가
+# 헬스체크
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/admin/ || exit 1
+    CMD uv run curl -f http://localhost:8000/admin/ || exit 1
 
-# 개발 서버 실행 (나중에 gunicorn으로 변경 가능)
+# 개발 서버 실행
 CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
