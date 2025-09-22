@@ -1,5 +1,31 @@
+# 환경변수 (민감정보)
 .env
-*.pyc
-__pycache__/
+.env.local
+.env.*.local
+
+# 데이터베이스
 db.sqlite3
+*.sqlite3
+
+# Django
+media/
+staticfiles/
+__pycache__/
+*.pyc
+.coverage
+
+# 가상환경
 .venv/
+venv/
+
+# 에디터
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes data (선택사항)
+postgres_data/
+redis_data/

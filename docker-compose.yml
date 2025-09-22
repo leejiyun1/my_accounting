@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: accounting_db
+    environment:
+      POSTGRES_DB: accounting_db
+      POSTGRES_USER: ez
+      POSTGRES_PASSWORD: ez21040683
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: accounting_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: accounting_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - /app/.venv
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+    depends_on:
+      - db
+      - redis
+    command: >
+      sh -c "uv run python manage.py migrate &&
+            uv run python manage.py runserver 0.0.0.0:8000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
