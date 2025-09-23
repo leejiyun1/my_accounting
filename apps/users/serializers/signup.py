@@ -7,7 +7,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'nickname', 'email', 'password', 'password_confirm')
+        fields = ('id', 'nickname', 'email', 'password', 'password_confirm', 'phone_number')
         extra_kwargs = {
             'password': {'write_only': True},
             'email': {'required': True},
@@ -15,8 +15,9 @@ class SignupSerializer(serializers.ModelSerializer):
             }
 
     def validate(self, data):
+        # 비밀번호 일치 검사
         if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise serializers.ValidationError("비밀번호가 일치하지 않습니다.")
         return data
 
     def validate_email(self, value):
@@ -32,7 +33,10 @@ class SignupSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        # 비밀번호 확인 필드 제거
         validated_data.pop('password_confirm', None)
+
+        # 사용자 생성
         user = User.objects.create_user(
             nickname=validated_data['nickname'],
             email=validated_data['email'],
