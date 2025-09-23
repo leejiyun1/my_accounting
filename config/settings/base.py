@@ -33,10 +33,10 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.accounts',
+    'apps.users',
     'apps.schedules',
     'apps.finances',
-    'apps.ai_parser',
+    'apps.ai',
     'apps.analytics',
 ]
 

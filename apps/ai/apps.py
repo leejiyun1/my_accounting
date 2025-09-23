@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class AiParserConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.ai_parser'
+    name = 'apps.ai'
