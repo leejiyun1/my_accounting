@@ -6,6 +6,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/users/', include('apps.users.urls')),
 ]
 
 # DEBUG 모드일 때만 debug_toolbar URL 추가
