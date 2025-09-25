@@ -1,4 +1,4 @@
-# serializers/journal_entry.py
+# apps/finances/serializers/journal_entry.py
 
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -50,3 +50,21 @@ class JournalEntryCreateSerializer(ModelSerializer):
             TransactionDetail.objects.create(**detail_data)
 
         return journal_entry
+
+class JournalEntryDetailSerializer(ModelSerializer):
+    transaction_details = TransactionDetailSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = JournalEntry
+        fields = ['id', 'book', 'entry_date', 'description', 'reference_id',
+                  'created_at', 'transaction_details']
+        read_only_fields = ['id', 'created_at', 'reference_id']
+
+class JournalEntryListSerializer(ModelSerializer):
+    total_debit = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    total_credit = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = JournalEntry
+        fields = ['id', 'book', 'entry_date', 'description', 'total_debit', 'total_credit']
+        read_only_fields = ['id', 'total_debit', 'total_credit']
