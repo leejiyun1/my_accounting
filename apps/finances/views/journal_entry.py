@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from apps.finances.serializers.journal_entry import JournalEntryCreateSerializer
 from apps.finances.services.journal_entry import JournalEntryService
+from apps.finances.models import JournalEntry
+from apps.finances.serializers.journal_entry import JournalEntryListSerializer, JournalEntryDetailSerializer
 
 class JournalEntryCreateView(APIView):
     """
@@ -34,3 +36,51 @@ class JournalEntryCreateView(APIView):
                 "transaction_summary": transaction_summary
             }
         }, status=status.HTTP_201_CREATED)
+
+
+class JournalEntryListView(APIView):
+    """
+    거래 목록 조회 API
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # 사용자의 거래 목록 조회 (장부별 필터링)
+        book_id = request.query_params.get('book')
+        queryset = JournalEntry.objects.filter(book__user_id=request.user.id)
+
+        if book_id:
+            queryset = queryset.filter(book_id=book_id)
+
+        # 날짜 역순 정렬
+        queryset = queryset.order_by('-entry_date', '-created_at')
+
+        serializer = JournalEntryListSerializer(queryset, many=True)
+        return Response({
+            "success": True,
+            "data": serializer.data
+        })
+
+class JournalEntryDetailView(APIView):
+    """
+    거래 상세 조회 API
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            journal_entry = JournalEntry.objects.get(
+                pk=pk,
+                book__user_id=request.user.id
+            )
+        except JournalEntry.DoesNotExist:
+            return Response(
+                {"error": "거래를 찾을 수 없습니다."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = JournalEntryDetailSerializer(journal_entry)
+        return Response({
+            "success": True,
+            "data": serializer.data
+        })
