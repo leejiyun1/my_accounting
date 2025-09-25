@@ -9,9 +9,11 @@ class JournalEntry(models.Model):
     분개장 모델 (거래 단위)
     """
 
-    user_id = models.BigIntegerField(
-        help_text="사용자 ID (외래키 제약 없이 참조)"
-    )
+    book = models.ForeignKey(
+    'Book',
+    on_delete=models.CASCADE,
+    help_text="소속 장부"
+)
 
     entry_date = models.DateField(
         help_text="거래 일자"
