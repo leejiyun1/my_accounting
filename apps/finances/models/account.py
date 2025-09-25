@@ -50,6 +50,14 @@ class Account(models.Model):
         help_text="활성화 상태"
     )
 
+    book_type = models.CharField(
+        max_length=20,
+        choices=[
+            ('personal', '개인장부'),
+            ('business', '사업장부')
+        ]
+    )
+
     created_at = models.DateTimeField(
         default=timezone.now,
         help_text="생성 시간"
