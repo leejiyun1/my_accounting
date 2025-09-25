@@ -106,7 +106,6 @@ class Command(BaseCommand):
         # 개인장부 계정 생성
         for code, name, acc_type in personal_accounts:
             Account.objects.get_or_create(
-                user_id=0,
                 account_code=code,
                 account_name=name,
                 account_type=acc_type,
@@ -116,7 +115,6 @@ class Command(BaseCommand):
         # 사업장부 계정 생성
         for code, name, acc_type in business_accounts:
             Account.objects.get_or_create(
-                user_id=0,
                 account_code=code,
                 account_name=name,
                 account_type=acc_type,

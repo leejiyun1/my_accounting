@@ -17,10 +17,6 @@ class Account(models.Model):
         ('expense', '비용'),
     ]
 
-    user_id = models.BigIntegerField(
-        help_text="사용자 ID (외래키 제약 없이 참조)"
-    )
-
     account_code = models.CharField(
         max_length=10,
         help_text="계정과목 코드 (예: 1100, 4100)"
@@ -68,8 +64,9 @@ class Account(models.Model):
         verbose_name = '계정과목'
         verbose_name_plural = '계정과목들'
         indexes = [
-            models.Index(fields=['user_id']),
             models.Index(fields=['account_code']),
+            models.Index(fields=['book_type']),
+            models.Index(fields=['account_code' 'book_type']),
         ]
 
     def __str__(self):
